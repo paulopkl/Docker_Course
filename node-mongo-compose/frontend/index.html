@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APP</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Simple Register</h1>
+        <hr>
+        <div>
+            <input name='id' type="hidden" />
+            <div class="form-group">
+                <label for="Name"></label>
+                <input type="text" class="form-control" name="name" placeholder="Enter the name" />
+            </div>
+            <button class="btn btn-success" save>Save</button>
+        </div>
+        <table class="table" id="clients">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="clientRows"></tbody>
+        </table>
+    </div>
+
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+    <script>
+        const API = 'http://localhost:3000';
+
+        const createButton = (label, type) => $('<button>').addClass('btn btn-' + type).text(label);
+
+        const removeClient = client => {
+            $.ajax({
+                method: 'DELETE',
+                url: API + '/clients/' + client._id,
+                success: getClients
+            });
+        }
+
+        const setIdButton = client => {
+            $('[name=id]').attr('value', client._id);
+            $('[name=name]').val(client.name);
+        }
+
+        const getClients = callback => {
+            $.ajax({
+                url: API + '/clients',
+                method: 'GET',
+                success: clients => {
+                    const rows = clients.map(client => {
+                        const updateButton = createButton('Update', 'warning').click(() => setIdButton(client));
+                        const removeButton = createButton('Delete', 'danger').click(() => removeClient(client));
+
+                        return $('<tr>')
+                            .append($('<td>')
+                                .append(client.name))
+                            .append($('<td>')
+                                .append(updateButton)
+                                .append(removeButton));
+                    });
+
+                    $('#clientRows').html(rows);
+                    $('[name=name').val('');
+                },
+                error: error => { alert(error) }
+            });
+        }
+
+        const saveClient = () => {
+            const _id = $('[name=id]').val();
+            const name = $('[name=name]').val();
+            $.ajax({
+                contentType: 'application/json',
+                dataType: 'json',
+                url: API + '/clients/' + _id,
+                method: _id ? 'PUT' : 'POST',
+                data: JSON.stringify(_id  ? { _id, name } : { name }),
+                success: getClients
+            })
+        }
+
+        $(() => {
+            $('button[save]').click(saveClient);
+            getClients();
+        });
+    </script>
+</body>
+</html>
