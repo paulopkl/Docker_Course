@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-mail Sender</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="container">
+    <h1>E-mail Sender</h1>
+    <form action="http://localhost/api" method="POST">
+        <div>
+            <label for="subject">Subject</label>
+            <input type="text" name="subject">
+        </div>
+
+        <div>
+            <label for="menssage">Menssage</label>
+            <textarea name="message" cols="50" rows="6"></textarea>
+        </div>
+
+        <div>
+            <button>Send !</button>
+        </div>
+    </form>
+</body>
+</html>

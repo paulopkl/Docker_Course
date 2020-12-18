@@ -1,0 +1,7 @@
+label {
+    display: block;
+}
+
+textarea, input {
+    width: 400px;
+}
